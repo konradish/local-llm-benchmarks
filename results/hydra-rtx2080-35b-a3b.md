@@ -31,6 +31,7 @@ Raising the micro-batch from the default 512 to 2,048 changes prompt reading fro
 | `U-n34-ub2048` | UD-Q4_K_M | 34 | 2048 | q8_0 | 1069.2 | 48.9 | 46.5 |  | 7286 | ok |
 | `U-n34-ub4096` | UD-Q4_K_M | 34 | 4096 | q8_0 |  | 48.7 |  |  | 5602 | does not fit: 4K prompt, 8K context |
 | `U-n36-ub4096` | UD-Q4_K_M | 36 | 4096 | q8_0 |  | 48.0 |  |  | 4642 | does not fit: 4K prompt, 8K context |
+
 - Pair at the same layer count: `N33-ub512` to `U-n33-ub2048`: read **445 to 1,087 (+144%)**, write 49.4 to 49.4, VRAM 6.1 to 7.7 GB.
 - Each expert layer moved off the GPU frees about 466 MiB and costs about 1% of write speed (50.0, 49.4, 48.5 for 32, 33, 34 CPU layers).
 - `-ub 4096` does not fit at 34 or even 36 CPU layers.
@@ -51,6 +52,7 @@ Every row below allocates a full 64K context and measures write speed with 65,00
 | `C64-n36-ub2048-k8v16` | UD-Q4_K_M | 36 | 2048 | K q8_0 / V f16 | 1039.1 | 48.1 | 45.3 | 26.6 | 7146 | ok |
 | `C64-n36-ub2048-repeat` | UD-Q4_K_M | 36 | 2048 | q8_0 | 1036.6 | 47.9 | 45.4 | 31.2 | 6846 | ok |
 | `C64-G-n36-ub2048-kvf16` | UD-Q4_K_M | 36 | 2048 | f16 | 1041.3 | 48.3 | 46.8 | 38.4 | 7446 | ok |
+
 - **Write speed collapses with depth, and the KV type decides how much.** With the usual q8_0 KV cache, write speed falls from 48 to about 31 at 65K tokens of context; with an **f16 KV cache it falls only to 38.1**. That is +20% at long context, and no loss at short context. The price is about 0.6 GB of VRAM, which costs one more CPU layer (36 instead of 35).
 - **Do not mix K and V types.** q8_0 for K with f16 for V was the slowest at depth (26.6), worse than q8_0 for both (31.2 to 32.2). Matched types stay on the fast path.
 - **Layer count barely moves long-context write speed.** It sits at 31 to 33 (q8_0) across 34 to 36 CPU layers, which is what pointed at the KV cache instead.
@@ -68,6 +70,7 @@ Every row below allocates a full 64K context and measures write speed with 65,00
 | `H-n29-ub512` | UD-Q4_K_M | 29 | 512 | q8_0 |  | 51.4 |  |  | 7576 | does not fit: 4K prompt, 8K context |
 | `H-n31-ub1024` | UD-Q4_K_M | 31 | 1024 | q8_0 | 739.8 | 51.2 | 48.3 |  | 7574 | ok |
 | `H-n30-kvf16` | UD-Q4_K_M | 30 | 512 | f16 | 470.9 | 51.7 | 50.4 |  | 7608 | ok |
+
 - **30 CPU layers is the most the card holds** (29 runs out of VRAM): write 52.5 against 50.0 at 32 layers (+5%).
 - **A bigger micro-batch helps chat too:** 31 CPU layers with `-ub 1024` reads at 740 instead of 470, with write at 51.2.
 - **KV type does not matter at short context** (f16 vs q8_0 at 30 layers: 51.7 vs 52.5, inside the noise).
@@ -90,6 +93,7 @@ Every row below allocates a full 64K context and measures write speed with 65,00
 | `H-n30-t16-pin` | UD-Q4_K_M | 30 | 512 | q8_0 | 470.2 | 53.9 | 51.1 |  | 7530 | ok |
 | `H-G-n30-ub512` | UD-Q4_K_M | 30 | 512 | q8_0 | 470.2 | 52.0 | 49.6 |  | 7530 | ok |
 | `H-G-n30-ub512-repeat` | UD-Q4_K_M | 30 | 512 | q8_0 | 471.1 | 52.2 | 49.0 |  | 7530 | ok |
+
 Why the box behaves like this (my arithmetic from the model's published config, not a measurement): decode reads about 0.5 GB of expert weights per token, so at ~50 tokens/s it uses roughly a quarter of the quad-channel DDR4's peak bandwidth. That points at CPU work and per-operation overhead, not memory bandwidth, as the limit, which would explain why moving layers to the GPU helps a little and why governor and thread changes do nothing.
 
 ## 5. How high a quant fits, and what it costs
@@ -109,6 +113,7 @@ Coding profile (64K context, f16 KV, `-ub 2048`), best fitting split of each qua
 | `C64-Q80-n39` | Q8_0 | 39 | 2048 | f16 | 698.8 | 33.8 | 33.4 | 30.5 | 6704 | ok |
 | `C64-Q8XL-n38` | UD-Q8_K_XL | 38 | 2048 | f16 | 669.6 | 34.2 | 32.6 |  | 7800 | does not fit: 64K context |
 | `C64-Q8XL-n39` | UD-Q8_K_XL | 39 | 2048 | f16 | 655.9 | 33.6 | 32.3 | 28.4 | 7080 | ok |
+
 Chat profile (small window, q8_0 KV, `-ub 512`):
 
 | Run | Quant | CPU layers | `-ub` | KV | Read (4,096) | Write | Write @ 8K | Write @ 65K | Peak VRAM (MiB) | Status |
@@ -120,6 +125,7 @@ Chat profile (small window, q8_0 KV, `-ub 512`):
 | `H-Q6K-n35` | UD-Q6_K | 35 | 512 | q8_0 | 336.4 | 41.0 | 39.2 |  | 6198 | ok |
 | `H-Q80-n36` | Q8_0 | 36 | 512 | q8_0 | 270.7 | 34.0 | 33.1 |  | 6186 | ok |
 | `H-Q80-n37` | Q8_0 | 37 | 512 | q8_0 | 264.8 | 35.1 | 34.4 |  | 5372 | ok |
+
 - **Each step up costs write speed:** 48.2 (Q4_K_M) to 42.1 (Q5) to 39.5 (Q6) to **33.8 (Q8_0)**, a 30% drop end to end; prompt reading falls from 1,040 to 910, 850 and 712. At 65K tokens of depth the gap narrows: 38.1, 34.7, 34.3, 31.8 (-17%).
 - **More CPU layers are needed as the quant grows:** 36 for Q4, 37 for Q5 and Q6 (38 for headroom), 38 for Q8_0, 39 for UD-Q8_K_XL, to leave room for the bigger expert weights and a 64K context.
 - **UD-Q8_K_XL buys nothing here.** Same write speed as plain Q8_0 (33.6 vs 33.8), slower at depth (28.4 vs 31.8), slower reading (656 vs 712), and one more CPU layer. One concern raised in other users' reports (which I did not verify) was that its BF16 tensors could be slow on a GPU with no BF16 support; I do not see that in write speed on the 2080, but I do see the other costs.
@@ -138,8 +144,32 @@ Chat profile (small window, q8_0 KV, `-ub 512`):
 
 These are that author's own quant builds, not the Unsloth files I benchmarked, so read them as the shape of the curve. The shape matters for the speed table: Q6_K to Q8_0 reduces the divergence by only about 8% while costing about 14% of write speed here. By these figures the quality knee sits around Q5_K_M to Q6_K, and Q8_0 is for people who want the last sliver and can pay for it.
 
+## 6. Multi-token prediction (MTP): a real gain on predictable text
+
+Qwen3.6 ships an extra prediction head. llama.cpp's `--spec-type draft-mtp --spec-draft-n-max 2` uses it to draft tokens that the main model then verifies in one pass. `llama-bench` cannot run speculation, so this was tested through a real `llama-server` with the coding setup (64K context, f16 KV, `-ub 2048`) and **production sampling** (temperature 1.0, top-p 0.95, top-k 20). The control is the *same file* with speculation switched off, so the flags are the only difference. Write speed in tokens/second, median of three requests; raw rows in [`data/mtp-ab.jsonl`](../data/mtp-ab.jsonl), harness in [`scripts/mtp-ab.sh`](../scripts/mtp-ab.sh).
+
+| Config | Code | Thinking | Prose |
+|---|---|---|---|
+| MTP off (control), 36 CPU layers | 47.3 | 46.1 | 46.3 |
+| MTP on, 36 CPU layers | **59.5** (+26%, 91% drafts accepted) | **53.4** (+16%, 79% drafts accepted) | **49.4** (+7%, 65% drafts accepted) |
+| MTP on, 38 CPU layers | **56.3** (+19%, 89% drafts accepted) | **52.7** (+14%, 82% drafts accepted) | **47.0** (+2%, 64% drafts accepted) |
+| MTP on, 38 CPU layers, CUDA graphs off | **53.5** (+13%, 87% drafts accepted) | **52.9** (+15%, 82% drafts accepted) | **45.2** (-2%, 60% drafts accepted) |
+
+| Config | Read, 30K prompt | Read, 59K prompt | Peak VRAM after the run (MiB) |
+|---|---|---|---|
+| MTP off (control), 36 CPU layers | 849 | 701 | 6270 |
+| MTP on, 36 CPU layers | 827 (-3%) | 674 | 7514 |
+| MTP on, 38 CPU layers | 802 (-6%) | 655 | 6588 |
+| MTP on, 38 CPU layers, CUDA graphs off | 804 (-5%) | 658 | 6548 |
+
+- **The gain follows how predictable the text is.** The model's drafts are accepted 91% of the time on code, 79% in thinking mode and 65% on prose, and the speedup follows: **+26% on code, +16% thinking, +7% prose**.
+- **It is not free.** The prediction head needs about 1.2 GB of VRAM (7.5 GB peak against 6.3 GB), and prompt reading is 3% slower on a 30K prompt (827 vs 849) and 4% on a 59K one. A full 64K context still fits.
+- **Making room costs the gain.** Moving two more expert layers to the CPU for VRAM headroom (38 layers) gave back most of it (+19%, +14%, +2%). Disabling CUDA graphs, which one report suggested for MTP with CPU offload, made it worse.
+- **How I judged it.** Before running, I set a bar of +10% on both a code and a prose prompt. The 36-layer config misses it on prose (+6.8%), so by that rule alone MTP is a flop. I did not apply the rule, because it ignored the thinking-mode prompt, which is most of what an agent generates, and because prose is the case MTP is expected to help least. For coding it is a clear win; for chat prose it is marginal. Judge it on your own mix.
+- **Not tested:** MTP with tool calls, and long agent sessions near the 64K limit (VRAM headroom is thin at 36 layers: 0.3 GB).
+
 ## What this does not cover
 
 - Quality: these are speed numbers for a 4-bit quant. The quant comparison below uses third-party quality figures, not mine.
-- Speculative decoding (multi-token prediction) and the `ik_llama.cpp` fork: researched and queued, **not yet run**. The research reports were mixed on whether speculation helps when the experts live in system RAM, so I am not guessing.
+- The `ik_llama.cpp` fork: researched and queued, **not yet run**.
 - Server behavior: `llama-bench` has no prompt cache or queueing.

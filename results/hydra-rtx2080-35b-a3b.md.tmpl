@@ -94,8 +94,20 @@ Chat profile (small window, q8_0 KV, `-ub 512`):
 
 These are that author's own quant builds, not the Unsloth files I benchmarked, so read them as the shape of the curve. The shape matters for the speed table: Q6_K to Q8_0 reduces the divergence by only about 8% while costing about 14% of write speed here. By these figures the quality knee sits around Q5_K_M to Q6_K, and Q8_0 is for people who want the last sliver and can pay for it.
 
+## 6. Multi-token prediction (MTP): a real gain on predictable text
+
+Qwen3.6 ships an extra prediction head. llama.cpp's `--spec-type draft-mtp --spec-draft-n-max 2` uses it to draft tokens that the main model then verifies in one pass. `llama-bench` cannot run speculation, so this was tested through a real `llama-server` with the coding setup (64K context, f16 KV, `-ub 2048`) and **production sampling** (temperature 1.0, top-p 0.95, top-k 20). The control is the *same file* with speculation switched off, so the flags are the only difference. Write speed in tokens/second, median of three requests; raw rows in [`data/mtp-ab.jsonl`](../data/mtp-ab.jsonl), harness in [`scripts/mtp-ab.sh`](../scripts/mtp-ab.sh).
+
+{{mtp}}
+
+- **The gain follows how predictable the text is.** The model's drafts are accepted 91% of the time on code, 79% in thinking mode and 65% on prose, and the speedup follows: **+26% on code, +16% thinking, +7% prose**.
+- **It is not free.** The prediction head needs about 1.2 GB of VRAM (7.5 GB peak against 6.3 GB), and prompt reading is 3% slower on a 30K prompt (827 vs 849) and 4% on a 59K one. A full 64K context still fits.
+- **Making room costs the gain.** Moving two more expert layers to the CPU for VRAM headroom (38 layers) gave back most of it (+19%, +14%, +2%). Disabling CUDA graphs, which one report suggested for MTP with CPU offload, made it worse.
+- **How I judged it.** Before running, I set a bar of +10% on both a code and a prose prompt. The 36-layer config misses it on prose (+6.8%), so by that rule alone MTP is a flop. I did not apply the rule, because it ignored the thinking-mode prompt, which is most of what an agent generates, and because prose is the case MTP is expected to help least. For coding it is a clear win; for chat prose it is marginal. Judge it on your own mix.
+- **Not tested:** MTP with tool calls, and long agent sessions near the 64K limit (VRAM headroom is thin at 36 layers: 0.3 GB).
+
 ## What this does not cover
 
 - Quality: these are speed numbers for a 4-bit quant. The quant comparison below uses third-party quality figures, not mine.
-- Speculative decoding (multi-token prediction) and the `ik_llama.cpp` fork: researched and queued, **not yet run**. The research reports were mixed on whether speculation helps when the experts live in system RAM, so I am not guessing.
+- The `ik_llama.cpp` fork: researched and queued, **not yet run**.
 - Server behavior: `llama-bench` has no prompt cache or queueing.

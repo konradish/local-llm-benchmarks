@@ -29,7 +29,8 @@ The 4080 rows are older single measurements from my lab notes; see [results/rtx4
 3. **The usual tuning knobs did almost nothing.** CPU governor and thread count (12 to 16): no difference. `--poll 100`: slightly worse. Thread pinning gave about 2% at best. Moving an expert layer to the GPU is worth about 1% each.
 4. **Each step up in quant costs 6 to 14% of write speed.** Q4_K_M to Q8_0 is 30% slower writing for a third-party KL-divergence gain that is mostly already there at Q6_K.
 5. **A 125B-parameter model is usable on an 8 GB card** if the engine keeps the experts in RAM and caches the hot ones in VRAM: 39 write and 460 read tokens/s at 64K context, after tuning an engine whose *defaults* regressed prompt reading by 26% on this hardware.
-6. **PCIe decides whether a GPU-side expert cache pays off.** On the 4080's PCIe 4.0 link it nearly tripled prompt reading and lifted write speed; on the 2080's PCIe 3.0 it only helped reading.
+6. **Multi-token prediction helps in proportion to how predictable the text is.** With the model's own prediction head on (same file, speculation off as the control): +26% write speed on code, +16% in thinking mode, +7% on prose, for 1.2 GB of VRAM and about 3% slower prompt reading.
+7. **PCIe decides whether a GPU-side expert cache pays off.** On the 4080's PCIe 4.0 link it nearly tripled prompt reading and lifted write speed; on the 2080's PCIe 3.0 it only helped reading.
 
 ## Results
 
@@ -56,7 +57,7 @@ Labels starting `C64-` also run the 65K-depth pass. `scripts/build_pages.py` reg
 
 - **One example of each machine.** Another 2080 with slower RAM would land elsewhere.
 - **Speed only.** The only quality figures are third-party and labeled as such.
-- **llama-bench is not a server.** No prompt cache, no multi-user queueing, no speculative decoding. Speculative decoding and the `ik_llama.cpp` fork are researched and queued but **not yet run**.
+- **llama-bench is not a server.** No prompt cache, no multi-user queueing, no speculative decoding; the MTP test therefore ran through `llama-server`. The `ik_llama.cpp` fork is researched and queued but **not yet run**.
 - **The 4080 numbers are looser** (older, single runs, a shared GPU) and are kept apart for that reason.
 
 ## Credits and licenses

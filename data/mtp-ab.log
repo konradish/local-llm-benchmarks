@@ -1,0 +1,97 @@
+12:59:59 === M0-off (n-cpu-moe 36  )
+13:00:55 server up (pid 302342); VRAM 6192 MiB
+M0-off code  greedy rep0: write 47.24 read 73.1 draft None/None
+M0-off code  greedy rep1: write 47.3 read 47.8 draft None/None
+M0-off code  greedy rep2: write 47.31 read 49.3 draft None/None
+M0-off code  prod   rep0: write 47.35 read 49.6 draft None/None
+M0-off code  prod   rep1: write 47.3 read 47.4 draft None/None
+M0-off code  prod   rep2: write 47.31 read 47.6 draft None/None
+M0-off prose greedy rep0: write 47.39 read 59.9 draft None/None
+M0-off prose greedy rep1: write 46.68 read 46.8 draft None/None
+M0-off prose greedy rep2: write 46.3 read 48.3 draft None/None
+M0-off prose prod   rep0: write 46.28 read 48.4 draft None/None
+M0-off prose prod   rep1: write 46.26 read 46.8 draft None/None
+M0-off prose prod   rep2: write 46.29 read 46.8 draft None/None
+M0-off think greedy rep0: write 46.06 read 76.8 draft None/None
+M0-off think greedy rep1: write 46.07 read 46.3 draft None/None
+M0-off think greedy rep2: write 46.07 read 47.9 draft None/None
+M0-off think prod   rep0: write 46.09 read 47.7 draft None/None
+M0-off think prod   rep1: write 46.06 read 46.3 draft None/None
+M0-off think prod   rep2: write 46.08 read 46.4 draft None/None
+M0-off long  greedy rep0: write 41.62 read 849.4 draft None/None
+M0-off long  prod   rep0: write 43.89 read 35.6 draft None/None
+M0-off fit   greedy rep0: write 38.64 read 701.0 draft None/None
+13:04:51 VRAM after the matrix: 6270 MiB
+13:04:59 === M1-mtp-n36 (n-cpu-moe 36 --spec-type draft-mtp --spec-draft-n-max 2 )
+13:05:16 server up (pid 302554); VRAM 7378 MiB
+M1-mtp-n36 code  greedy rep0: write 61.49 read 66.3 draft 215/230
+M1-mtp-n36 code  greedy rep1: write 60.3 read 45.1 draft 214/232
+M1-mtp-n36 code  greedy rep2: write 60.41 read 46.3 draft 214/232
+M1-mtp-n36 code  prod   rep0: write 60.84 read 45.9 draft 219/236
+M1-mtp-n36 code  prod   rep1: write 59.43 read 45.6 draft 227/252
+M1-mtp-n36 code  prod   rep2: write 59.46 read 45.6 draft 241/270
+M1-mtp-n36 prose greedy rep0: write 50.95 read 58.3 draft 221/338
+M1-mtp-n36 prose greedy rep1: write 49.87 read 44.9 draft 221/338
+M1-mtp-n36 prose greedy rep2: write 50.06 read 45.8 draft 221/338
+M1-mtp-n36 prose prod   rep0: write 49.41 read 45.7 draft 224/350
+M1-mtp-n36 prose prod   rep1: write 50.65 read 45.1 draft 230/337
+M1-mtp-n36 prose prod   rep2: write 47.23 read 44.7 draft 222/352
+M1-mtp-n36 think greedy rep0: write 57.3 read 75.0 draft 252/292
+M1-mtp-n36 think greedy rep1: write 56.61 read 44.1 draft 252/292
+M1-mtp-n36 think greedy rep2: write 56.55 read 44.6 draft 252/292
+M1-mtp-n36 think prod   rep0: write 53.74 read 44.9 draft 244/309
+M1-mtp-n36 think prod   rep1: write 53.44 read 43.7 draft 246/304
+M1-mtp-n36 think prod   rep2: write 52.14 read 40.8 draft 241/313
+M1-mtp-n36 long  greedy rep0: write 47.33 read 827.2 draft 46/72
+M1-mtp-n36 long  prod   rep0: write 45.77 read 29.0 draft 45/74
+M1-mtp-n36 fit   greedy rep0: write 42.06 read 673.6 draft 17/25
+13:08:53 VRAM after the matrix: 7514 MiB
+13:09:01 === M2-mtp-n38 (n-cpu-moe 38 --spec-type draft-mtp --spec-draft-n-max 2 )
+13:09:17 server up (pid 302680); VRAM 6452 MiB
+M2-mtp-n38 code  greedy rep0: write 57.42 read 66.1 draft 214/232
+M2-mtp-n38 code  greedy rep1: write 57.08 read 44.7 draft 214/232
+M2-mtp-n38 code  greedy rep2: write 57.08 read 45.8 draft 214/232
+M2-mtp-n38 code  prod   rep0: write 56.32 read 45.8 draft 240/270
+M2-mtp-n38 code  prod   rep1: write 56.33 read 44.5 draft 174/192
+M2-mtp-n38 code  prod   rep2: write 55.65 read 44.6 draft 254/290
+M2-mtp-n38 prose greedy rep0: write 48.21 read 56.2 draft 222/336
+M2-mtp-n38 prose greedy rep1: write 47.21 read 44.0 draft 223/334
+M2-mtp-n38 prose greedy rep2: write 48.77 read 44.8 draft 223/334
+M2-mtp-n38 prose prod   rep0: write 46.99 read 44.7 draft 221/355
+M2-mtp-n38 prose prod   rep1: write 45.97 read 43.9 draft 221/355
+M2-mtp-n38 prose prod   rep2: write 47.81 read 44.2 draft 229/340
+M2-mtp-n38 think greedy rep0: write 55.26 read 71.8 draft 254/290
+M2-mtp-n38 think greedy rep1: write 54.67 read 43.1 draft 254/290
+M2-mtp-n38 think greedy rep2: write 56.27 read 44.3 draft 254/290
+M2-mtp-n38 think prod   rep0: write 53.36 read 44.2 draft 246/305
+M2-mtp-n38 think prod   rep1: write 52.68 read 43.1 draft 249/299
+M2-mtp-n38 think prod   rep2: write 52.08 read 42.2 draft 249/300
+M2-mtp-n38 long  greedy rep0: write 45.25 read 802.0 draft 46/72
+M2-mtp-n38 long  prod   rep0: write 46.73 read 26.0 draft 49/72
+M2-mtp-n38 fit   greedy rep0: write 41.88 read 655.4 draft 17/25
+13:13:01 VRAM after the matrix: 6588 MiB
+13:13:09 === M3-mtp-n38-nographs (n-cpu-moe 38 --spec-type draft-mtp --spec-draft-n-max 2 GGML_CUDA_DISABLE_GRAPHS=1)
+13:13:25 server up (pid 302786); VRAM 6452 MiB
+M3-mtp-n38-nographs code  greedy rep0: write 55.94 read 66.0 draft 214/232
+M3-mtp-n38-nographs code  greedy rep1: write 55.69 read 45.0 draft 214/232
+M3-mtp-n38-nographs code  greedy rep2: write 55.76 read 46.1 draft 214/232
+M3-mtp-n38-nographs code  prod   rep0: write 52.43 read 45.4 draft 249/299
+M3-mtp-n38-nographs code  prod   rep1: write 53.55 read 44.5 draft 226/260
+M3-mtp-n38-nographs code  prod   rep2: write 55.14 read 44.5 draft 248/272
+M3-mtp-n38-nographs prose greedy rep0: write 46.83 read 56.2 draft 222/336
+M3-mtp-n38-nographs prose greedy rep1: write 46.75 read 44.1 draft 222/336
+M3-mtp-n38-nographs prose greedy rep2: write 47.14 read 44.8 draft 222/336
+M3-mtp-n38-nographs prose prod   rep0: write 43.01 read 44.9 draft 211/376
+M3-mtp-n38-nographs prose prod   rep1: write 46.43 read 44.2 draft 224/350
+M3-mtp-n38-nographs prose prod   rep2: write 45.19 read 45.0 draft 219/360
+M3-mtp-n38-nographs think greedy rep0: write 55.03 read 72.0 draft 254/290
+M3-mtp-n38-nographs think greedy rep1: write 54.54 read 43.9 draft 254/290
+M3-mtp-n38-nographs think greedy rep2: write 54.53 read 44.4 draft 254/290
+M3-mtp-n38-nographs think prod   rep0: write 53.96 read 43.9 draft 252/292
+M3-mtp-n38-nographs think prod   rep1: write 52.85 read 43.8 draft 249/297
+M3-mtp-n38-nographs think prod   rep2: write 50.52 read 43.9 draft 242/314
+M3-mtp-n38-nographs long  greedy rep0: write 42.01 read 803.9 draft 46/72
+M3-mtp-n38-nographs long  prod   rep0: write 42.24 read 21.0 draft 45/66
+M3-mtp-n38-nographs fit   greedy rep0: write 40.67 read 657.9 draft 17/25
+13:17:15 VRAM after the matrix: 6548 MiB
+13:17:23 ALL CONFIGS DONE

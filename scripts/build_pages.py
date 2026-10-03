@@ -4,6 +4,7 @@
 Markers, one per line:
   {{table: LABEL LABEL ...}}        rows in the order given
   {{table-prefix: C64-}}            every label with that prefix (last run of each label)
+  {{mtp}}                           the MTP speculation tables (scripts/mtp_table.py, from data/mtp-ab.jsonl)
 Run:  python3 scripts/build_pages.py        (writes results/<name>.md next to each <name>.md.tmpl)
 """
 import re, subprocess, sys
@@ -27,7 +28,8 @@ def build(tmpl):
         kind, rest = m.group(1), m.group(2).split()
         return render(["--prefix", *rest]) if kind == "table-prefix" else render(rest)
 
-    done = re.sub(r"^\{\{(table|table-prefix):\s*([^}]*)\}\}\s*$", sub, text, flags=re.M)
+    done = re.sub(r"^\{\{(table|table-prefix):\s*([^}]*)\}\}[ \t]*$", sub, text, flags=re.M)
+    done = re.sub(r"^\{\{mtp\}\}[ \t]*$", lambda m: subprocess.run([sys.executable, str(ROOT / "scripts" / "mtp_table.py")], capture_output=True, text=True, check=True).stdout.rstrip("\n"), done, flags=re.M)
     dest = tmpl.with_suffix("")          # foo.md.tmpl -> foo.md
     dest.write_text(done)
     print("built", dest.relative_to(ROOT))
