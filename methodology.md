@@ -25,6 +25,24 @@ All llama.cpp numbers come from `llama-bench` (upstream commit `fc07d78`), drive
 - **Downloads verified.** Every model file was checked against the SHA-256 published by Hugging Face before use.
 - **Research agents proposed, measurements decided.** Three web-research agents ranked ideas from published reports; none of their numbers are used as results. Only runs in the ledger count.
 
+## Models used
+
+Nothing is redistributed here; every file below can be downloaded from its source and checked against the SHA-256 that Hugging Face publishes for it.
+
+**35B tests (all RTX 2080 llama.cpp results):** [`unsloth/Qwen3.6-35B-A3B-GGUF`](https://huggingface.co/unsloth/Qwen3.6-35B-A3B-GGUF), the quants I measured:
+
+| File | Size | SHA-256 |
+|---|---|---|
+| `Qwen3.6-35B-A3B-UD-Q4_K_M.gguf` | 20.6 GiB | `ac0e2c1189e055faa36eff361580e79c5bd6f8e76bffb4ce547f167d53e31a61` |
+| `Qwen3.6-35B-A3B-UD-Q5_K_XL.gguf` | 24.8 GiB | `25233af7642e3a91bd52cc4aeefdbd4a117479088e06cf1aea5b6bedb443c506` |
+| `Qwen3.6-35B-A3B-UD-Q6_K.gguf` | 27.3 GiB | `4fe53b148b46f9b88830e2a3055c5b15c3a4d1e3ddc9a1384a108d8b9d59f043` |
+| `Qwen3.6-35B-A3B-Q8_0.gguf` | 34.4 GiB | `d1a395809f65a43a13ad119eb4e7acdef1ac6d68120f39902c8ab96e72794a59` |
+| `Qwen3.6-35B-A3B-UD-Q8_K_XL.gguf` | 35.8 GiB | `b762215c5f507f4865df4ac3d1afa803828afa41e05ecac3fac431a67bbd88e8` |
+
+**125B test:** Qwen3.8-Flash-Next IQ3_XXS from [`ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF`](https://huggingface.co/ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF), run with the [Strata](https://github.com/Niko1221/Strata) engine.
+
+The files can be large (20 to 36 GiB each for the 35B tests); I deleted the ones that lost after the comparison and keep the ones my serving profiles use, so re-download before reproducing a row.
+
 ## What this does not cover
 
 - **Quality.** These are speed benchmarks. Quant quality figures cited anywhere come from third parties and are labeled as such.
