@@ -1,0 +1,9 @@
+# Phase 1b (2026-10-03): scoreboard v2. Isolate the layer-count cost (N33/N34 at default ub) from the batch-size gain (U-* at the SAME layer count).
+# Q4_K_M, production flags. Downloads may still be running (disk + a little CPU); B1 is the fresh baseline for pp4096 + peak VRAM.
+B1-n32-ub512       ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 32 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none
+N33-ub512          ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 33 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none
+N34-ub512          ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 34 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none
+U-n33-ub2048       ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 33 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none -b 4096 -ub 2048
+U-n34-ub2048       ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 34 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none -b 4096 -ub 2048
+U-n34-ub4096       ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 34 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none -b 4096 -ub 4096
+U-n36-ub4096       ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 36 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none -b 4096 -ub 4096

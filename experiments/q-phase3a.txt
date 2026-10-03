@@ -1,0 +1,12 @@
+# Phase 3a (2026-10-03), governor still schedutil. Phase 2 findings: coding best = 35 CPU layers + ub 2048 (pp4096 1054, tg 48.1, 65K-depth decode 31.3, 7.3 GB peak); chat best = 30 layers (tg 52.5); 29 does not fit.
+# Decode at 65K depth is ~31-33 in EVERY config, independent of layers/ub: suspect the quantized (q8_0) KV in flash attention on Turing. Test f16 KV (costs ~0.6 GB at 64K, hence n36 as base).
+# Pair against C64-n36-ub2048 (q8_0/q8_0): pp4096 1037, tg 47.57, tg@65K 32.15 (single rep), peak 6846.
+C64-n36-ub2048-kvf16     ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 36 -fa on -ctk f16 -ctv f16 -t 14 -lm none -b 4096 -ub 2048
+C64-n36-ub2048-k8v16     ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 36 -fa on -ctk q8_0 -ctv f16 -t 14 -lm none -b 4096 -ub 2048
+C64-n36-ub2048-repeat    ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 36 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none -b 4096 -ub 2048
+# Chat base = H-n30-ub512 (tg 52.48, tg@8K 49.77). KV f16, then thread layouts (cores 0-15 are physical, 16-31 their SMT siblings; each L3 = 4 physical cores).
+H-n30-kvf16              ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 30 -fa on -ctk f16 -ctv f16 -t 14 -lm none
+H-n30-t16                ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 30 -fa on -ctk q8_0 -ctv q8_0 -t 16 -lm none
+H-n30-t12                ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 30 -fa on -ctk q8_0 -ctv q8_0 -t 12 -lm none
+H-n30-t16-pin            ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 30 -fa on -ctk q8_0 -ctv q8_0 -t 16 -lm none -C 0xFFFF --cpu-strict 1
+H-n30-t14-pin            ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 30 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none -C 0x3FFF --cpu-strict 1

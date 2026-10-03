@@ -1,0 +1,6 @@
+# Phase 3b (2026-10-03): the CPU governor. Same two reference configs as before, now under `performance` (acpi-cpufreq on Zen 1; was schedutil). Pair against:
+#   coding  C64-n36-ub2048-kvf16 (schedutil): pp4096 1040, tg 48.16, tg@8K 47.07, tg@65K 38.11, peak 7446 MiB      deep-pass noise ~ +-1 tok/s
+#   chat    H-n30-ub512          (schedutil): pp4096 470, tg 52.48 (sd 1.0), tg@8K 49.77
+C64-G-n36-ub2048-kvf16   ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 36 -fa on -ctk f16 -ctv f16 -t 14 -lm none -b 4096 -ub 2048
+H-G-n30-ub512            ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 30 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none
+H-G-n30-ub512-repeat     ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 30 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none

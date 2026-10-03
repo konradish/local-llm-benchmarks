@@ -1,0 +1,7 @@
+# Phase 1a (2026-10-03): config-only experiments on the production Q4_K_M, one change per line vs B0. Baseline = the llama-swap `chat` profile minus the server bits.
+# NOTE: model downloads are running on this box during these runs (disk write + a little CPU): B0b is the noise check; re-baseline after the downloads finish.
+B0-q4-prod   ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 32 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none
+B0b-q4-prod  ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 32 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none
+U1-ub2048    ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 32 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none -b 4096 -ub 2048
+U2-ub4096    ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 32 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none -b 4096 -ub 4096
+P1-poll100   ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 32 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none --poll 100

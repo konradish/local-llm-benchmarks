@@ -1,0 +1,18 @@
+# Phase 4 (2026-10-03): the quant curve, "highest quant that works" on 8 GB VRAM + 62 GB RAM. Governor = performance (set by phase 3b; Q4 reference rows are the C64-G-* / H-G-* runs).
+# CODING profile (C64-*): f16 KV, ub 2048, real 64K context. Per-layer expert VRAM grows with bits/weight, so each quant needs more layers on the CPU; two candidates each, a split that does not fit fails in ~1 min (CTX FAIL).
+# VRAM estimate (Q4 n36 = 7,446 MiB peak): Q5_K_XL ~560 MiB/layer -> n37; Q6_K ~640 -> n37/38; Q8 ~810 -> n38/39.
+C64-Q5XL-n37     ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q5_K_XL.gguf -ngl 99 --n-cpu-moe 37 -fa on -ctk f16 -ctv f16 -t 14 -lm none -b 4096 -ub 2048
+C64-Q5XL-n38     ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q5_K_XL.gguf -ngl 99 --n-cpu-moe 38 -fa on -ctk f16 -ctv f16 -t 14 -lm none -b 4096 -ub 2048
+C64-Q6K-n37      ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q6_K.gguf -ngl 99 --n-cpu-moe 37 -fa on -ctk f16 -ctv f16 -t 14 -lm none -b 4096 -ub 2048
+C64-Q6K-n38      ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q6_K.gguf -ngl 99 --n-cpu-moe 38 -fa on -ctk f16 -ctv f16 -t 14 -lm none -b 4096 -ub 2048
+C64-Q80-n38      ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-Q8_0.gguf -ngl 99 --n-cpu-moe 38 -fa on -ctk f16 -ctv f16 -t 14 -lm none -b 4096 -ub 2048
+C64-Q80-n39      ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-Q8_0.gguf -ngl 99 --n-cpu-moe 39 -fa on -ctk f16 -ctv f16 -t 14 -lm none -b 4096 -ub 2048
+C64-Q8XL-n38     ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q8_K_XL.gguf -ngl 99 --n-cpu-moe 38 -fa on -ctk f16 -ctv f16 -t 14 -lm none -b 4096 -ub 2048
+C64-Q8XL-n39     ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q8_K_XL.gguf -ngl 99 --n-cpu-moe 39 -fa on -ctk f16 -ctv f16 -t 14 -lm none -b 4096 -ub 2048
+# CHAT profile (small window): q8_0 KV, ub 512; push as many layers onto the GPU as fits. Q4 best = n30 (tg 52.5).
+H-Q5XL-n32       ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q5_K_XL.gguf -ngl 99 --n-cpu-moe 32 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none
+H-Q5XL-n33       ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q5_K_XL.gguf -ngl 99 --n-cpu-moe 33 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none
+H-Q6K-n34        ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q6_K.gguf -ngl 99 --n-cpu-moe 34 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none
+H-Q6K-n35        ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q6_K.gguf -ngl 99 --n-cpu-moe 35 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none
+H-Q80-n36        ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-Q8_0.gguf -ngl 99 --n-cpu-moe 36 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none
+H-Q80-n37        ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-Q8_0.gguf -ngl 99 --n-cpu-moe 37 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none

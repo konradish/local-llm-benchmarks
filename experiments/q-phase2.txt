@@ -1,0 +1,12 @@
+# Phase 2 (2026-10-03). Q4_K_M, scoreboard v3. Phase 1b found: -ub 2048 gives pp4096 ~1,087 (2.4x) at ~zero decode cost; ub 4096 does not fit; each extra CPU layer costs ~1% decode and frees ~466 MiB.
+# CODING profile (C64-* labels get the extra 64K pass: decode at 65K depth + peak VRAM with a full 64K context). Peak VRAM must stay under ~7,700 MiB of 7,801.
+C64-n35-ub2048   ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 35 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none -b 4096 -ub 2048
+C64-n36-ub2048   ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 36 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none -b 4096 -ub 2048
+C64-n34-ub2048   ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 34 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none -b 4096 -ub 2048
+C64-n34-ub1536   ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 34 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none -b 4096 -ub 1536
+C64-n35-ub1024   ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 35 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none -b 4096 -ub 1024
+# CHAT profile (small window is fine): push more layers onto the GPU. ~466 MiB per layer; n29 is expected not to fit at ub512.
+H-n31-ub512      ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 31 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none
+H-n30-ub512      ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 30 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none
+H-n29-ub512      ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 29 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none
+H-n31-ub1024     ~/llama/main/bin ~/models/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf -ngl 99 --n-cpu-moe 31 -fa on -ctk q8_0 -ctv q8_0 -t 14 -lm none -b 2048 -ub 1024
